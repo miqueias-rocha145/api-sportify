@@ -33,12 +33,10 @@ def token_acesso(client_id: str, client_secret: str) -> str:
     else:
         return resposta.json()["access_token"]
 
-def buscar_artistas(token: str, nome_artista: str):
+def buscar_artistas(nome_artista: str, headers: dict) -> str:
     resposta = requests.get(
         "https://api.spotify.com/v1/search",
-        headers= {
-            "Authorization": "Bearer " + token
-        },
+        headers=headers,
         params={
             "q": nome_artista,
             "limit": 1,
@@ -47,9 +45,24 @@ def buscar_artistas(token: str, nome_artista: str):
     )
 
     try:
+        primeiro_artista = resposta.json()['artists']['items'][0]
+    except IndexError as e:
+        print(f"ocorreu um erro: {e}")
+        primeiro_artista = None
+    return primeiro_artista
+
+def buscar_top_musicas_minhas(headers):
+    url = f"https://api.spotify.com/v1/me/top/tracks"
+    resposta = requests.get(
+        url,
+        headers=headers
+    )
+
+    try:
         resposta.raise_for_status()
     except requests.HTTPError as e:
         print(f"ocorreu um erro: {e}")
+        print(f"Detalhes: {resposta.text}")
         resultado = None
     else:
         resultado = resposta.json()
@@ -60,4 +73,15 @@ token = token_acesso(
     sportify_client_secret
 )
 
-pprint(buscar_artistas(token,"Joji"))
+autenticacao={
+    "Authorization": "Bearer " + token 
+}
+
+artista = buscar_artistas("Joji",headers=autenticacao)
+
+id_artista = artista['id']
+nome_artista = artista['name']
+
+pprint(buscar_top_musicas_minhas(
+    headers=autenticacao
+))
