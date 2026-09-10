@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import streamlit as st
 import os
 import base64
+from pprint import pprint
 
 
 load_dotenv()
@@ -31,3 +32,32 @@ def token_acesso(client_id: str, client_secret: str) -> str:
         return None
     else:
         return resposta.json()["access_token"]
+
+def buscar_artistas(token: str, nome_artista: str):
+    resposta = requests.get(
+        "https://api.spotify.com/v1/search",
+        headers= {
+            "Authorization": "Bearer " + token
+        },
+        params={
+            "q": nome_artista,
+            "limit": 1,
+            "type": "artist"
+        }
+    )
+
+    try:
+        resposta.raise_for_status()
+    except requests.HTTPError as e:
+        print(f"ocorreu um erro: {e}")
+        resultado = None
+    else:
+        resultado = resposta.json()
+    return resultado
+
+token = token_acesso(
+    sportify_client_id,
+    sportify_client_secret
+)
+
+pprint(buscar_artistas(token,"Joji"))
