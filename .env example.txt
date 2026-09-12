@@ -1,0 +1,2 @@
+SPORTIFY_CLIENT_ID='xxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+SPORTIFY_CLIENT_SECRET='xxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
