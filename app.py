@@ -33,7 +33,7 @@ def token_acesso(client_id: str, client_secret: str) -> str:
     else:
         return resposta.json()["access_token"]
 
-def buscar_artistas(nome_artista: str, headers: dict) -> str:
+def buscar_artistas(nome_artista: str, headers: dict[str, str]) -> str:
     resposta = requests.get(
         "https://api.spotify.com/v1/search",
         headers=headers,
@@ -51,8 +51,8 @@ def buscar_artistas(nome_artista: str, headers: dict) -> str:
         primeiro_artista = None
     return primeiro_artista
 
-def buscar_top_musicas_minhas(headers):
-    url = f"https://api.spotify.com/v1/me/top/tracks"
+def buscar_albums_artista(id_artista: str, headers: dict[str, str]):
+    url = f"https://api.spotify.com/v1/artists/{id_artista}/albums"
     resposta = requests.get(
         url,
         headers=headers
@@ -82,6 +82,7 @@ artista = buscar_artistas("Joji",headers=autenticacao)
 id_artista = artista['id']
 nome_artista = artista['name']
 
-pprint(buscar_top_musicas_minhas(
+pprint(buscar_albums_artista(
+    id_artista=id_artista,
     headers=autenticacao
 ))
